@@ -39,7 +39,7 @@ export default async function Profile() {
 
   try {
     gql_res = await request(
-      'http://namihei.cyberedge.jp:51337/graphql',
+      process.env.GRAPHQL_ENDPOINT_URL,
       query
     );
     // console.log(gql_res.profiles.data);

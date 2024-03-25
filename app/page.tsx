@@ -1,7 +1,6 @@
 import Cover from "@/components/cover";
 import { UserEventEntity, UserEventEntityResponseCollection } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
-import { env } from "process";
 
 let gql_res: any;
 
@@ -31,7 +30,7 @@ export default async function Home() {
 
   try {
     gql_res = await request(
-      'http://namihei.cyberedge.jp:51337/graphql',
+      process.env.GRAPHQL_ENDPOINT_URL,
       query
     );
     // console.log(gql_res.userEvents.data);

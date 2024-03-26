@@ -70,7 +70,7 @@ export default async function Profile() {
   return (
     <div>
       <Cover pathname='/profile' />
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 md:px-20">
         <div className="my-10">
           <table className="table-auto w-full">
             <tbody className="divide-y">

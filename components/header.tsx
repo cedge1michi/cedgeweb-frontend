@@ -29,7 +29,7 @@ export default function Header() {
                     <Image src="/CYBEREDGE.svg" width={300} height={80} />
                     <span className="text-2xl font-bold"></span>
                 </div>
-                <div id="navbar_menu" className="inline-flex items-center justify-end w-full gap-x-4 pb-2 md:w-auto md:pb-0">
+                <div id="navbar_menu" className="inline-flex items-center justify-end w-full gap-x-4 pb-2 md:w-auto md:gap-x-6 md:pb-0 md:pr-8">
                     {gen_navi_item('HOME', '/')}
                     {gen_navi_item('SERVICES', '/services')}
                     {gen_navi_item('PROFILE', '/profile')}

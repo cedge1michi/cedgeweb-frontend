@@ -43,8 +43,8 @@ export default async function Home() {
     const date = new Date(entity.attributes?.Date);
     return (
       <div className="my-8" key={entity.id}>
-        <div className="text-xl text-slate-800 font-semibold">{entity.attributes?.Title}</div>
-        <div>{date.toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' })}</div>
+        <div className="text-xl text-slate-800 font-semibold py-1">{entity.attributes?.Title}</div>
+        <div className="py-1">{date.toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' })}</div>
       </div>
     );
   }
@@ -52,7 +52,7 @@ export default async function Home() {
   return (
     <div>
       <Cover pathname='/' />
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 md:px-20">
         <div className="my-10">
           {gql_res.userEvents.data.map((entity: UserEventEntity) => {
             return create_event_element(entity);

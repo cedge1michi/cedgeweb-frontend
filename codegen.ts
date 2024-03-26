@@ -3,7 +3,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: "http://namihei.cyberedge.jp:51337/graphql",
+  schema: 'https://www.cyberedge.jp:8443/graphql',
   // documents: "./graphql/schema.graphql",
   // documents: "./app/**/*.tsx",
   generates: {

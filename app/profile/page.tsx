@@ -39,7 +39,7 @@ export default async function Profile() {
 
   try {
     gql_res = await request(
-      process.env.GRAPHQL_ENDPOINT_URL,
+      process.env.GRAPHQL_ENDPOINT_URL || '',
       query
     );
     // console.log(gql_res.profiles.data);

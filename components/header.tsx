@@ -26,7 +26,7 @@ export default function Header() {
         <div className='container mx-auto px-4'>
             <div className="flex items-center flex-wrap w-full md:inline-flex md:justify-between">
                 <div className='inline-flex flex-shrink-0 items-center w-full h-20 md:w-auto'>
-                    <Image src="/CYBEREDGE.svg" width={300} height={80} />
+                    <Image src="/CYBEREDGE.svg" width={300} height={80} alt="" />
                     <span className="text-2xl font-bold"></span>
                 </div>
                 <div id="navbar_menu" className="inline-flex items-center justify-end w-full gap-x-4 pb-2 md:w-auto md:gap-x-6 md:pb-0 md:pr-8">

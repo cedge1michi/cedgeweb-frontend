@@ -62,7 +62,7 @@ export default async function Profile() {
     return (
       <div className="my-8" key={entity.id}>
         <div className="py-2">【{entity.attributes?.Title}】</div>
-        <div>{parse(entity.attributes?.HTML)}</div>
+        <div>{parse(entity.attributes?.HTML || '')}</div>
       </div>
     );
   }

@@ -1,10 +1,8 @@
 import Cover from "@/components/cover";
-import { UserEventEntity, UserEventEntityResponseCollection } from "@/lib/graphql";
+import { UserEventEntity } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
 
-let gql_res: any;
-
-export default async function Home() {
+async function getData() {
   const query = gql`
     {
       userEvents(filters: {Visible: {eq: true}}, sort: "Date:desc") {
@@ -28,6 +26,8 @@ export default async function Home() {
     }
   `;
 
+  let gql_res: any;
+
   try {
     gql_res = await request(
       process.env.GRAPHQL_ENDPOINT_URL || '',
@@ -36,8 +36,14 @@ export default async function Home() {
     // console.log(gql_res.userEvents.data);
   }
   catch (e) {
-    console.log(e);
+    console.error(e);
   }
+
+  return gql_res.userEvents;
+}
+
+export default async function Home() {
+  const user_events: any = await getData();
 
   function create_event_element(entity: UserEventEntity) {
     const date = new Date(entity.attributes?.Date);
@@ -54,7 +60,7 @@ export default async function Home() {
       <Cover pathname='/' />
       <div className="container mx-auto px-6 md:px-20">
         <div className="my-10">
-          {gql_res.userEvents.data.map((entity: UserEventEntity) => {
+          {user_events.data.map((entity: UserEventEntity) => {
             return create_event_element(entity);
           })}
         </div>

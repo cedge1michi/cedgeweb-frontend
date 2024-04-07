@@ -35,9 +35,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <Suspense>
-        <GoogleAnalytics />
-      </Suspense>
       <body className={`
         ${font.className}
         text-base
@@ -56,6 +53,9 @@ export default function RootLayout({
             <Footer />
           </div>
         </div>
+        <Suspense>
+          <GoogleAnalytics />
+        </Suspense>
       </body>
     </html >
   );

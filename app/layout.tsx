@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import GoogleAnalytics from "@/components/google_analytics";
+import { Suspense } from "react";
 
 /**
  * 利用するフォントを定義する。
@@ -39,7 +40,9 @@ export default function RootLayout({
         text-base
         text-gray-700
       `}>
-        <GoogleAnalytics />
+        <Suspense>
+          <GoogleAnalytics />
+        </Suspense>
         <div id="header" className="relative z-20 h-20">
           <div className="fixed top-0 w-full bg-white">
             <Header />

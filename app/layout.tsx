@@ -4,17 +4,28 @@ import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
+/**
+ * 利用するフォントを定義する。
+ */
 const font = Noto_Sans_JP({
   weight: ["400", "500"],
   subsets: ["latin"],
   display: "swap",
 });
 
+/**
+ * サイトのタイトルと説明を定義する。
+ */
 export const metadata: Metadata = {
   title: "サイバーエッジ株式会社",
   description: "IT製品・リソューションやサービスに関する新規事業開発支援、ITシステムやサービスに関する企画・コンサルティング・システム開発・保守運用、リユース事業について、持続可能なビジネスへとご支援いたします。"
 };
 
+/**
+ * 全体レイアウトのhtml要素を生成する。
+ * @param children 各ページのdiv要素
+ * @returns html要素
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +38,7 @@ export default function RootLayout({
         text-base
         text-gray-700
       `}>
-        <div id="header" className="relative z-20 h-20">
+        < div id="header" className="relative z-20 h-20">
           <div className="fixed top-0 w-full bg-white">
             <Header />
           </div>
@@ -41,6 +52,6 @@ export default function RootLayout({
           </div>
         </div>
       </body>
-    </html>
+    </html >
   );
 }

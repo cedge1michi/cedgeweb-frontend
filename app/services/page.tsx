@@ -1,4 +1,4 @@
-import Cover from "@/components/cover";
+import { Cover } from "@/components/cover";
 import { Service, ServiceEntity, ServiceEntityResponseCollection, UserEventEntity, UserEventEntityResponseCollection } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
 import parse from 'html-react-parser';

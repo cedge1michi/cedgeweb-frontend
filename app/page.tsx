@@ -1,4 +1,4 @@
-import Cover from "@/components/cover";
+import { Cover } from "@/components/cover";
 import { UserEventEntity } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
 

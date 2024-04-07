@@ -1,4 +1,4 @@
-import Cover from "@/components/cover";
+import { Cover } from "@/components/cover";
 import { ServiceEntity, ServiceEntityResponseCollection, UserEventEntity, UserEventEntityResponseCollection } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
 

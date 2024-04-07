@@ -35,14 +35,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <Suspense>
+        <GoogleAnalytics />
+      </Suspense>
       <body className={`
         ${font.className}
         text-base
         text-gray-700
       `}>
-        <Suspense>
-          <GoogleAnalytics />
-        </Suspense>
         <div id="header" className="relative z-20 h-20">
           <div className="fixed top-0 w-full bg-white">
             <Header />

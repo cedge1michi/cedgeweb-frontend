@@ -40,6 +40,9 @@ export default function RootLayout({
         text-base
         text-gray-700
       `}>
+        <Suspense>
+          <GoogleAnalytics />
+        </Suspense>
         <div id="header" className="relative z-20 h-20">
           <div className="fixed top-0 w-full bg-white">
             <Header />
@@ -53,9 +56,6 @@ export default function RootLayout({
             <Footer />
           </div>
         </div>
-        <Suspense>
-          <GoogleAnalytics />
-        </Suspense>
       </body>
     </html >
   );

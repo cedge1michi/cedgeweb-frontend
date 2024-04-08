@@ -1,5 +1,5 @@
 module.exports = {
-  siteUrl: "https://localhost:3000/",
+  siteUrl: "https://www.cyberedge.jp/",
   generateRobotsTxt: true,
   sitemapSize: 7000,
   outDir: "sitemap",

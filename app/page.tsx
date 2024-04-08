@@ -1,4 +1,5 @@
 import { Cover } from "@/components/cover";
+import GoogleTagManager from "@/components/google_tag_manager";
 import { UserEventEntity } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
 
@@ -56,15 +57,18 @@ export default async function Home() {
   }
 
   return (
-    <div>
-      <Cover pathname='/' />
-      <div className="container mx-auto px-6 md:px-20">
-        <div className="my-10">
-          {user_events.data.map((entity: UserEventEntity) => {
-            return create_event_element(entity);
-          })}
+    <>
+      <GoogleTagManager />
+      <div>
+        <Cover pathname='/' />
+        <div className="container mx-auto px-6 md:px-20">
+          <div className="my-10">
+            {user_events.data.map((entity: UserEventEntity) => {
+              return create_event_element(entity);
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

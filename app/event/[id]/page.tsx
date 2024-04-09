@@ -1,17 +1,17 @@
 import { Cover } from "@/components/cover";
 import GoogleTagManager from "@/components/google_tag_manager";
+import { Description, create_description_element } from "@/lib/create_element";
 import { UserEventEntity } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
-import Link from "next/link";
+import { Children } from "react";
 
-// ISR指定
-// 更新間隔を60分に設定（キャッシュ破棄&データ取得）
-export const revalidate = 3600;
+// SSR指定
+export const dynamic = 'force-dynamic'
 
-async function getData() {
+async function getData(id: number) {
   const query = gql`
     {
-      userEvents(filters: {Visible: {eq: true}}, sort: "Date:desc") {
+      userEvent(id: ${id}) {
         data {
           id
           attributes {
@@ -39,28 +39,29 @@ async function getData() {
       process.env.GRAPHQL_ENDPOINT_URL || '',
       query
     );
-    // console.log(gql_res.userEvents.data);
   }
   catch (e) {
     console.error(e);
   }
 
-  return gql_res.userEvents;
+  return gql_res.userEvent;
 }
 
-export default async function Home() {
-  const user_events: any = await getData();
+export default async function Event({ params }: { params: { id: number } }) {
+  const user_event: any = await getData(params.id);
 
   function create_event_element(entity: UserEventEntity) {
     const date = new Date(entity.attributes?.Date);
     return (
       <div className="my-8" key={entity.id}>
-        <div className="text-xl text-slate-800 font-semibold py-1 hover:text-gray-400">
-          <Link href={'/event/' + entity.id}>
-            {entity.attributes?.Title}
-          </Link>
-        </div>
+        <h1 className="text-2xl text-slate-800 font-semibold py-1">{entity.attributes?.Title}</h1>
         <div className="py-1">{date.toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' })}</div>
+        <div className="py-1">
+          {entity.attributes?.Description && entity.attributes?.Description.map(
+            (description: Description) => {
+              return create_description_element(description);
+            })}
+        </div>
       </div>
     );
   }
@@ -69,12 +70,12 @@ export default async function Home() {
     <>
       <GoogleTagManager />
       <div>
-        <Cover pathname='/' />
+        <Cover pathname='/event' />
         <div className="container mx-auto px-6 md:px-20">
           <div className="my-10">
-            {user_events.data.map((entity: UserEventEntity) => {
-              return create_event_element(entity);
-            })}
+            {
+              create_event_element(user_event.data)
+            }
           </div>
         </div>
       </div>

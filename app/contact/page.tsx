@@ -13,50 +13,7 @@ export async function generateMetadata({ params }: { params: any }) {
   }
 };
 
-// let gql_res: any;
-
 export default async function Services() {
-  //   const query = gql`
-  //     mutation {
-  //       createContact(
-  //         data: {
-  //           Title: "Test"
-  //           Fullname: "Kaz TAKAHASHI"
-  //           Email: "kaz@cyberedge.jp"
-  //           Description: "Test"
-  //         }
-  //       ) {
-  //         data {
-  //           id
-  //         }
-  //       }
-  //     }
-  //   `;
-
-  //   try {
-  //     gql_res = await request(
-  //       process.env.GRAPHQL_ENDPOINT_URL,
-  //       query,
-  //       {},
-  //       {
-  //         authorization: `Bearer ${process.env.STRAPI_API_KEY}`,
-  //       }
-  //     );
-  //     // console.log(gql_res.services.data);
-  //   }
-  //   catch (e) {
-  //     console.log(e);
-  //   }
-
-  // function create_element(entity: ServiceEntity) {
-  //   return (
-  //     <div className="my-8" key={entity.id}>
-  //       <div className="text-xl text-slate-800 font-semibold">{entity.attributes?.Title}</div>
-  //       <div>{entity.attributes?.Description[0].children[0].text}</div>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <GoogleTagManager />

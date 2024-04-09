@@ -25,6 +25,11 @@ function getTitleInfo(path: string) {
                 title: "CONTACT",
                 subTitle: "HOME > CONTACT"
             };
+        case '/event':
+            return {
+                title: "EVENT",
+                subTitle: "HOME > EVENT"
+            };
         default:
             return { title: '', subTitle: '' };
     }

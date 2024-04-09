@@ -39,7 +39,7 @@ export function Cover({ pathname }: Readonly<{ pathname: string; }>) {
     const { title, subTitle } = getTitleInfo(pathname);
 
     return (
-        <div className="bg-cover bg-center h-[500px] bg-[url('/yun_10682_shinjuku_Retouch_4k.jpg')]">
+        <div className="bg-cover bg-center h-[500px] bg-[url('/cover_cedge.webp')]">
             <div className="container mx-auto px-10">
                 <div className="h-[500px] flex items-center text-white text-5xl font-bold">
                     <div className="flex flex-col">

@@ -3,6 +3,16 @@ import { Service, ServiceEntity, ServiceEntityResponseCollection, UserEventEntit
 import request, { gql } from "graphql-request";
 import parse from 'html-react-parser';
 
+/**
+ * サイトタイトルとサイト説明を定義する。
+ */
+export async function generateMetadata({ params }: { params: any }) {
+  return {
+    title: "Services - サイバーエッジ株式会社",
+    description: "サイバーエッジ株式会社は、Microsoft Power Platformの活用支援、IT製品・リソーションの新規事業開発、ITシステムのコンサルティングやシステムの開発、PCリユースサービスを通じて、企業が直面する多様な課題に対し、技術的専門知識と業界経験を融合させたカスタマイズされたソリューションを提供します。",
+  }
+};
+
 let gql_res: any;
 
 export default async function Services() {

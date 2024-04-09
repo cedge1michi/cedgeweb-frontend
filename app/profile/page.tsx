@@ -11,6 +11,16 @@ import {
 import request, { gql } from "graphql-request";
 import parse from 'html-react-parser';
 
+/**
+ * サイトタイトルとサイト説明を定義する。
+ */
+export async function generateMetadata({ params }: { params: any }) {
+  return {
+    title: "Profile - サイバーエッジ株式会社",
+    description: "サイバーエッジ株式会社は、最先端のITシステムやソリューションに関する技術支援、コンサルティングやシステム開発等、信頼と品質を重視したサービスで、あなたのビジネスを次のレベルへ導きます。",
+  }
+};
+
 let gql_res: any;
 
 export default async function Profile() {

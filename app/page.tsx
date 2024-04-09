@@ -5,8 +5,8 @@ import request, { gql } from "graphql-request";
 import Link from "next/link";
 
 // ISR指定
-// 更新間隔を60分に設定（キャッシュ破棄&データ取得）
-export const revalidate = 3600;
+// 更新間隔を1分に設定（キャッシュ破棄&データ取得）
+export const revalidate = 60;
 
 async function getData() {
   const query = gql`

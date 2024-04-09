@@ -3,6 +3,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { logger } from "@/lib/logger";
 
 /**
  * 利用するフォントを定義する。

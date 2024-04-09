@@ -1,6 +1,7 @@
 import { Cover } from "@/components/cover";
 import GoogleTagManager from "@/components/google_tag_manager";
 import { UserEventEntity } from "@/lib/graphql";
+import { logger } from "@/lib/logger";
 import request, { gql } from "graphql-request";
 import Link from "next/link";
 
@@ -65,6 +66,7 @@ export default async function Home() {
     );
   }
 
+  logger.info('/');
   return (
     <>
       <GoogleTagManager />

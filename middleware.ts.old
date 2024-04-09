@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export function middleware(request: NextRequest) {
-    console.log('request=' + request.nextUrl.pathname);
-    // pathname = request.nextUrl.pathname;
+export function middleware(request: NextRequest, response: NextResponse) {
     return NextResponse.next()
 }
 
 export const config = {
-    matcher: ['/'],
+    matcher: [
+        '/',
+        '/services/:path*',
+        '/profile/:path*',
+        '/contact/:path*',
+        '/event/:path*',
+    ],
 }

@@ -1,4 +1,5 @@
 import { Cover } from "@/components/cover";
+import GoogleTagManager from "@/components/google_tag_manager";
 import {
   LocationEntity,
   LocationEntityResponseCollection,
@@ -78,22 +79,25 @@ export default async function Profile() {
   }
 
   return (
-    <div>
-      <Cover pathname='/profile' />
-      <div className="container mx-auto px-6 md:px-20">
-        <div className="my-10">
-          <table className="table-auto w-full">
-            <tbody className="divide-y">
-              {gql_res.profiles.data.map((entity: ProfileEntity) => {
-                return create_profile_element(entity);
-              })}
-            </tbody>
-          </table>
-          {gql_res.locations.data.map((entity: LocationEntity) => {
-            return create_location_element(entity);
-          })}
+    <>
+      <GoogleTagManager />
+      <div>
+        <Cover pathname='/profile' />
+        <div className="container mx-auto px-6 md:px-20">
+          <div className="my-10">
+            <table className="table-auto w-full">
+              <tbody className="divide-y">
+                {gql_res.profiles.data.map((entity: ProfileEntity) => {
+                  return create_profile_element(entity);
+                })}
+              </tbody>
+            </table>
+            {gql_res.locations.data.map((entity: LocationEntity) => {
+              return create_location_element(entity);
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

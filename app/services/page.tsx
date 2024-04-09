@@ -1,4 +1,5 @@
 import { Cover } from "@/components/cover";
+import GoogleTagManager from "@/components/google_tag_manager";
 import { Service, ServiceEntity, ServiceEntityResponseCollection, UserEventEntity, UserEventEntityResponseCollection } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
 import parse from 'html-react-parser';
@@ -117,15 +118,18 @@ export default async function Services() {
   }
 
   return (
-    <div>
-      <Cover pathname='/services' />
-      <div className="container mx-auto px-6 md:px-20">
-        <div className="my-10">
-          {gql_res.services.data.map((entity: ServiceEntity) => {
-            return create_service_element(entity);
-          })}
+    <>
+      <GoogleTagManager />
+      <div>
+        <Cover pathname='/services' />
+        <div className="container mx-auto px-6 md:px-20">
+          <div className="my-10">
+            {gql_res.services.data.map((entity: ServiceEntity) => {
+              return create_service_element(entity);
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

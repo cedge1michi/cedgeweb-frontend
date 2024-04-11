@@ -66,7 +66,6 @@ export default async function Home() {
     );
   }
 
-  logger.info('/');
   return (
     <>
       <GoogleTagManager />

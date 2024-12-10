@@ -34,6 +34,8 @@ export default function Header() {
                     {gen_navi_item('SERVICES', '/services')}
                     {gen_navi_item('PROFILE', '/profile')}
                     {gen_navi_item('CONTACT', '/contact')}
+                    <a href="http://ecopluspc.cyberedge.jp/" className="text-white bg-green-600 px-3 py-1 rounded-xl" target="_blank">REUSE</a>
+                    {gen_navi_item('', '/contact')}
                 </div>
             </div>
         </div>

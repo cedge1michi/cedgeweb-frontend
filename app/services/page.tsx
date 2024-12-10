@@ -45,7 +45,9 @@ export default async function Services() {
 
   type DescriptionText = {
     type: string,
-    text: string
+    text: string,
+    url: string,
+    children: DescriptionText[]
   }
 
   type DescriptionListItem = {
@@ -69,9 +71,19 @@ export default async function Services() {
         return (
           <div>
             {text_array.map((description_text: DescriptionText) => {
-              return (
-                parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
-              )
+              if (description_text.type === "text") {
+                return (
+                  parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
+                )
+              }
+              else {
+                return (
+                  parse(`<a href="${description_text.url}" target="_blank">${description_text.children[0].text}</a>`)
+                )
+              }
+              // return (
+              //   parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
+              // )
             })}
           </div>
         );

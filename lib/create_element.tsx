@@ -4,6 +4,8 @@ import { Service, ServiceEntity } from './graphql';
 export type DescriptionText = {
   type: string,
   text: string
+  url: string,
+  children: DescriptionText[];
 }
 
 export type DescriptionListItem = {
@@ -25,10 +27,17 @@ export function create_description_element(description: Description) {
       const text_array = description.children as DescriptionText[];
       return (
         <div>
-          {text_array.map((description_text: DescriptionText) => {
-            return (
-              parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
-            )
+          {text_array.map((description_text: DescriptionText, index: number) => {
+            if (description_text.type === "text") {
+              return (
+                parse(`<div key="${index}" class="my-3 leading-loose">${description_text.text}</div>`)
+              )
+            }
+            else {
+              return (
+                parse(`<a key="${index}" href="${description_text.url}" target="_blank">${description_text.children[0].text}</a>`)
+              )
+            }
           })}
         </div>
       );
@@ -47,9 +56,9 @@ export function create_description_element(description: Description) {
       return (
         <div>
           <ul className={format}>
-            {item_array.map((list_item: DescriptionListItem) => {
-              return list_item.children.map((description_text: DescriptionText) => {
-                return parse(`<li class="ml-8 py-1">${description_text.text}</li>`);
+            {item_array.map((list_item: DescriptionListItem, iindex: number) => {
+              return list_item.children.map((description_text: DescriptionText, dindex: number) => {
+                return parse(`<li key="${iindex}-${dindex}" class="ml-8 py-1">${description_text.text}</li>`);
               })
             })}
           </ul>

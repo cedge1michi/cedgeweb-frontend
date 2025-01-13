@@ -3,6 +3,13 @@ import GoogleTagManager from "@/components/google_tag_manager";
 import { Service, ServiceEntity, ServiceEntityResponseCollection, UserEventEntity, UserEventEntityResponseCollection } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
 import parse from 'html-react-parser';
+import { JSDOM } from 'jsdom';
+import createDOMPurify from 'dompurify';
+import { create_description_element } from "@/lib/create_element";
+
+// 仮想 DOM の作成
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 /**
  * サイトタイトルとサイト説明を定義する。
@@ -63,56 +70,59 @@ export default async function Services() {
     children: DescriptionContent[];
   }
 
-  function create_description_element(description: Description) {
-    // console.log(description.type);
-    switch (description.type) {
-      case 'paragraph':
-        const text_array = description.children as DescriptionText[];
-        return (
-          <div>
-            {text_array.map((description_text: DescriptionText) => {
-              if (description_text.type === "text") {
-                return (
-                  parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
-                )
-              }
-              else {
-                return (
-                  parse(`<a href="${description_text.url}" target="_blank">${description_text.children[0].text}</a>`)
-                )
-              }
-              // return (
-              //   parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
-              // )
-            })}
-          </div>
-        );
-        break;
-      case 'list':
-        const item_array = description.children as DescriptionListItem[];
-        let format;
-        switch (description.format) {
-          case 'unordered':
-            format = 'list-disc';
-            break;
-          case 'ordered':
-            format = 'list-decimal';
-            break;
-        }
-        return (
-          <div>
-            <ul className={format}>
-              {item_array.map((list_item: DescriptionListItem) => {
-                return list_item.children.map((description_text: DescriptionText) => {
-                  return parse(`<li class="ml-8 py-1">${description_text.text}</li>`);
-                })
-              })}
-            </ul>
-          </div >
-        );
-        break;
-    }
-  }
+  // function create_description_element(description: Description) {
+  //   // console.log(description.type);
+  //   switch (description.type) {
+  //     case 'paragraph':
+  //       const text_array = description.children as DescriptionText[];
+  //       return (
+  //         <div>
+  //           {text_array.map((description_text: DescriptionText) => {
+  //             if (description_text.type === "text") {
+  //               // return (
+  //               //   parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
+  //               // )
+  //               // サニタイズ処理を追加
+  //               const sanitizedHtml = DOMPurify.sanitize(description_text.text);
+  //               return parse(`<div class="my-3 leading-loose">${sanitizedHtml}</div>`);
+  //             }
+  //             else {
+  //               return (
+  //                 parse(`<a href="${description_text.url}" target="_blank">${description_text.children[0].text}</a>`)
+  //               )
+  //             }
+  //             // return (
+  //             //   parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
+  //             // )
+  //           })}
+  //         </div>
+  //       );
+  //       break;
+  //     case 'list':
+  //       const item_array = description.children as DescriptionListItem[];
+  //       let format;
+  //       switch (description.format) {
+  //         case 'unordered':
+  //           format = 'list-disc';
+  //           break;
+  //         case 'ordered':
+  //           format = 'list-decimal';
+  //           break;
+  //       }
+  //       return (
+  //         <div>
+  //           <ul className={format}>
+  //             {item_array.map((list_item: DescriptionListItem) => {
+  //               return list_item.children.map((description_text: DescriptionText) => {
+  //                 return parse(`<li class="ml-8 py-1">${description_text.text}</li>`);
+  //               })
+  //             })}
+  //           </ul>
+  //         </div >
+  //       );
+  //       break;
+  //   }
+  // }
 
   function create_service_element(entity: ServiceEntity) {
     // console.log(`**** id: ${entity.id} ****`);

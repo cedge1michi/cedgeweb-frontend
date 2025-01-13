@@ -1,5 +1,11 @@
 import parse from 'html-react-parser';
 import { Service, ServiceEntity } from './graphql';
+import { JSDOM } from 'jsdom';
+import createDOMPurify from 'dompurify';
+
+// 仮想 DOM の作成
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 export type DescriptionText = {
   type: string,
@@ -29,9 +35,12 @@ export function create_description_element(description: Description) {
         <div>
           {text_array.map((description_text: DescriptionText, index: number) => {
             if (description_text.type === "text") {
-              return (
-                parse(`<div key="${index}" class="my-3 leading-loose">${description_text.text}</div>`)
-              )
+              // return (
+              //   parse(`<div key="${index}" class="my-3 leading-loose">${description_text.text}</div>`)
+              // )
+                // サニタイズ処理を追加
+                const sanitizedHtml = DOMPurify.sanitize(description_text.text);
+                return parse(`<div key="${index}" class="my-3 leading-loose">${sanitizedHtml}</div>`);
             }
             else {
               return (

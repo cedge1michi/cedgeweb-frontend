@@ -26,7 +26,8 @@
     "pino-http": "^9.0.0",
     "pino-pretty": "^11.0.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "schema-dts": "^1.1.2"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.2.25",

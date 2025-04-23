@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { Cover } from "@/components/cover";
 import GoogleTagManager from "@/components/google_tag_manager";
 import { Description, create_description_element } from "@/lib/create_element";

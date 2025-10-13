@@ -2,10 +2,10 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    './stories/**/*.{js,ts,jsx,tsx}',
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
+    "./stories/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -16,6 +16,18 @@ const config: Config = {
       },
     },
   },
+  // safelist: [
+  //   "leading-[1.9]",
+  //   "whitespace-pre-wrap",
+  //   "underline",
+  //   "underline-offset-2",
+  //   "transition-colors",
+  //   "break-words",
+  //   "group",
+  //   "text-blue-600",
+  //   "hover:text-blue-700",
+  //   "group-hover:text-blue-700",
+  // ],
   plugins: [],
 };
 export default config;

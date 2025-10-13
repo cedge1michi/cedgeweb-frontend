@@ -1,154 +1,223 @@
+// app/services/page.tsx
+// Services（SSR, Strapi v5 Rich Text を直接描画する安全版）
+
+export const runtime = 'nodejs';
+
 import { Cover } from "@/components/cover";
 import GoogleTagManager from "@/components/google_tag_manager";
-import { Service, ServiceEntity, ServiceEntityResponseCollection, UserEventEntity, UserEventEntityResponseCollection } from "@/lib/graphql";
 import request, { gql } from "graphql-request";
-import parse from 'html-react-parser';
-import { JSDOM } from 'jsdom';
-import createDOMPurify from 'dompurify';
-import { create_description_element } from "@/lib/create_element";
+import React from "react";
 
-// 仮想 DOM の作成
-const window = new JSDOM('').window;
-const DOMPurify = createDOMPurify(window);
+/* ============== Strapi v5: 受け取り生型（最低限） ============== */
+type RawInline =
+  | { type: 'text'; text?: string }
+  | { type: 'a'; url?: string; children?: RawInline[] }
+  | { type: 'code'; text?: string }
+  | { type: string; text?: string; url?: string; children?: RawInline[] };
 
-/**
- * サイトタイトルとサイト説明を定義する。
- */
-export async function generateMetadata({ params }: { params: any }) {
-  return {
-    title: "Services - サイバーエッジ株式会社",
-    description: "サイバーエッジ株式会社は、Microsoft Power Platformの活用支援、IT製品・リソーションの新規事業開発、ITシステムのコンサルティングやシステムの開発、PCリユースサービスを通じて、企業が直面する多様な課題に対し、技術的専門知識と業界経験を融合させたカスタマイズされたソリューションを提供します。",
-  }
+type RawListItem = { type: 'list-item'; children?: RawInline[] };
+
+type RawBlock =
+  | { type: 'paragraph'; children?: RawInline[] }
+  | { type: 'list'; format?: 'unordered' | 'ordered'; children?: RawListItem[] }
+  | { type: 'code'; children?: { type: 'text'; text?: string }[] } // code block
+  | { type: 'heading'; level?: number; children?: RawInline[] }
+  | { type: string; format?: string; children?: any[] };
+
+type ServiceItem = {
+  documentId: string;
+  Title?: string | null;
+  URL?: string | null;
+  Description?: RawBlock[] | null;
+  Order?: number | null;
+  Visible?: boolean | null;
 };
 
-let gql_res: any;
+/* ============== GraphQL ============== */
+const ENDPOINT = process.env.GRAPHQL_ENDPOINT_URL || "";
+
+const QUERY = gql`
+  query Services {
+    services(
+      filters: { Visible: { eq: true } }
+      sort: ["Order:asc"]
+      pagination: { limit: 100 }
+    ) {
+      documentId
+      Title
+      URL
+      Description
+      Order
+    }
+  }
+`;
+
+async function getServices(): Promise<ServiceItem[]> {
+  if (!ENDPOINT) {
+    console.error("GRAPHQL_ENDPOINT_URL が未設定です");
+    return [];
+  }
+  try {
+    const res = await request<{ services: ServiceItem[] }>(
+      ENDPOINT,
+      QUERY,
+      {},
+      { "content-type": "application/json" } as any
+    );
+    return res?.services ?? [];
+  } catch (e) {
+    console.error("GraphQL failed:", e);
+    return [];
+  }
+}
+
+/* ============== Rich Text 直レンダラ ============== */
+
+// Inline ノードの描画
+function renderInline(n: RawInline, key?: React.Key): React.ReactNode {
+  switch (n.type) {
+    case 'text':
+      return <span key={key}>{n.text ?? ''}</span>;
+    case 'a':
+      return (
+        <a
+          key={key}
+          href={n.url ?? '#'}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:opacity-80"
+        >
+          {(n.children ?? []).map((c, i) => renderInline(c, i))}
+        </a>
+      );
+    case 'code': // inline code
+      return (
+        <code key={key} className="px-1 py-0.5 rounded bg-slate-100">
+          {n.text ?? ''}
+        </code>
+      );
+    default:
+      // 未知 inline はテキスト扱い
+      return <span key={key}>{(n as any).text ?? ''}</span>;
+  }
+}
+
+// list-item の描画
+function renderListItem(li: RawListItem, key: React.Key) {
+  return (
+    <li key={key} className="ml-6 my-1 list-disc marker:text-slate-400">
+      {(li.children ?? []).map((c, i) => renderInline(c, i))}
+    </li>
+  );
+}
+
+// Block ノードの描画
+function renderBlock(b: RawBlock, key: React.Key): React.ReactNode {
+  switch (b.type) {
+    case 'paragraph':
+      return (
+        <p key={key} className="my-3 leading-relaxed">
+          {(b.children ?? []).map((c, i) => renderInline(c, i))}
+        </p>
+      );
+
+    case 'list': {
+      const items = (b.children ?? []).map((li, i) => renderListItem(li, i));
+      if ((b.format ?? 'unordered') === 'ordered') {
+        return (
+          <ol key={key} className="my-3 ml-6 list-decimal">
+            {items}
+          </ol>
+        );
+      }
+      return (
+        <ul key={key} className="my-3 ml-6 list-disc">
+          {items}
+        </ul>
+      );
+    }
+
+    case 'code': {
+      const text = (b.children ?? []).map(c => c?.text ?? '').join('\n');
+      return (
+        <pre key={key} className="my-3 p-3 bg-slate-50 border rounded overflow-x-auto">
+          <code>{text}</code>
+        </pre>
+      );
+    }
+
+    case 'heading': {
+      // 見出しはレベルに応じてサイズを変える（なければ h3 相当）
+      const lvl = (b as any).level ?? 3;
+      const children = (b.children ?? []).map((c, i) => renderInline(c, i));
+      const classMap: Record<number, string> = {
+        1: "text-3xl font-semibold",
+        2: "text-2xl font-semibold",
+        3: "text-xl font-semibold",
+        4: "text-lg font-semibold",
+        5: "text-base font-semibold",
+        6: "text-base",
+      };
+      const cls = classMap[Math.min(Math.max(1, Number(lvl)), 6)];
+      return <div key={key} className={`my-3 ${cls}`}>{children}</div>;
+    }
+
+    default: {
+      // 未知ブロック → paragraph として無難に表示
+      const children = ((b as any).children ?? []) as RawInline[];
+      return (
+        <p key={key} className="my-3 leading-relaxed">
+          {children.map((c, i) => renderInline(c, i))}
+        </p>
+      );
+    }
+  }
+}
+
+/* ============== 表示 ============== */
+
+function ServiceBlock(item: ServiceItem) {
+  return (
+    <div className="my-8">
+      {/* タイトル：URLがあればリンク */}
+      {item.URL ? (
+        <a
+          href={item.URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xl text-slate-700 font-semibold hover:text-slate-600 transition"
+        >
+          {item.Title}
+        </a>
+      ) : (
+        <div className="text-xl text-slate-700 font-semibold">{item.Title}</div>
+      )}
+
+      {/* 説明（RichTextをそのまま描画） */}
+      <div className="mt-3">
+        {(item.Description ?? []).map((blk, i) => renderBlock(blk, `${item.documentId}-${i}`))}
+      </div>
+    </div>
+  );
+}
+
+/* ============== ページ（SSR） ============== */
 
 export default async function Services() {
-  const query = gql`
-    query {
-      services(filters: {Visible: {eq: true}}, sort: "Order:asc") {
-        data {
-          id
-          attributes {
-            Title
-            URL
-            Description
-          }
-        }    
-      }    
-    }
-  `;
-
-  try {
-    gql_res = await request(
-      process.env.GRAPHQL_ENDPOINT_URL || '',
-      query
-    );
-    // console.log(gql_res.services.data);
-  }
-  catch (e) {
-    console.log(e);
-  }
-
-  type DescriptionText = {
-    type: string,
-    text: string,
-    url: string,
-    children: DescriptionText[]
-  }
-
-  type DescriptionListItem = {
-    type: string,
-    children: DescriptionText[]
-  }
-
-  type DescriptionContent = DescriptionText | DescriptionListItem
-
-  type Description = {
-    type: string,
-    format: string,
-    children: DescriptionContent[];
-  }
-
-  // function create_description_element(description: Description) {
-  //   // console.log(description.type);
-  //   switch (description.type) {
-  //     case 'paragraph':
-  //       const text_array = description.children as DescriptionText[];
-  //       return (
-  //         <div>
-  //           {text_array.map((description_text: DescriptionText) => {
-  //             if (description_text.type === "text") {
-  //               // return (
-  //               //   parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
-  //               // )
-  //               // サニタイズ処理を追加
-  //               const sanitizedHtml = DOMPurify.sanitize(description_text.text);
-  //               return parse(`<div class="my-3 leading-loose">${sanitizedHtml}</div>`);
-  //             }
-  //             else {
-  //               return (
-  //                 parse(`<a href="${description_text.url}" target="_blank">${description_text.children[0].text}</a>`)
-  //               )
-  //             }
-  //             // return (
-  //             //   parse(`<div class="my-3 leading-loose">${description_text.text}</div>`)
-  //             // )
-  //           })}
-  //         </div>
-  //       );
-  //       break;
-  //     case 'list':
-  //       const item_array = description.children as DescriptionListItem[];
-  //       let format;
-  //       switch (description.format) {
-  //         case 'unordered':
-  //           format = 'list-disc';
-  //           break;
-  //         case 'ordered':
-  //           format = 'list-decimal';
-  //           break;
-  //       }
-  //       return (
-  //         <div>
-  //           <ul className={format}>
-  //             {item_array.map((list_item: DescriptionListItem) => {
-  //               return list_item.children.map((description_text: DescriptionText) => {
-  //                 return parse(`<li class="ml-8 py-1">${description_text.text}</li>`);
-  //               })
-  //             })}
-  //           </ul>
-  //         </div >
-  //       );
-  //       break;
-  //   }
-  // }
-
-  function create_service_element(entity: ServiceEntity) {
-    // console.log(`**** id: ${entity.id} ****`);
-    const service = entity.attributes as Service;
-    return (
-      <div className="my-8" key={entity.id}>
-        <div className="text-xl text-slate-800 font-semibold">{service.Title}</div>
-        <div>
-          {service.Description.map((description: Description) => {
-            return create_description_element(description);
-          })}
-        </div>
-      </div>
-    );
-  }
+  const services = await getServices();
 
   return (
     <>
       <GoogleTagManager />
       <div>
-        <Cover pathname='/services' />
+        <Cover pathname="/services" />
         <div className="container mx-auto px-6 md:px-20">
           <div className="my-10">
-            {gql_res.services.data.map((entity: ServiceEntity) => {
-              return create_service_element(entity);
-            })}
+            {services.length === 0 ? (
+              <div className="text-slate-500">現在掲載中のサービスはありません。</div>
+            ) : (
+              services.map((s) => <ServiceBlock key={s.documentId} {...s} />)
+            )}
           </div>
         </div>
       </div>

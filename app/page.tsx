@@ -1,111 +1,143 @@
+export const runtime = 'nodejs'; // 明示的に Node ランタイムでSSR
+
 import { Cover } from "@/components/cover";
 import GoogleTagManager from "@/components/google_tag_manager";
-import { UserEventEntity } from "@/lib/graphql";
-import { logger } from "@/lib/logger";
 import request, { gql } from "graphql-request";
 import Link from "next/link";
 
-// ISR指定
-// 更新間隔を1分に設定（キャッシュ破棄&データ取得）
-export const revalidate = 60;
+// ===== GraphQL 型（必要最小限） =====
+type UserEvent = {
+  documentId: string;
+  Title?: string | null;
+  Description?: string | null;
+  Date?: string | null;
+  Image?: { url: string } | null;
+  Visible?: boolean | null;
+};
 
-async function getData() {
-  const query = gql`
-    {
-      userEvents(filters: {Visible: {eq: true}}, sort: "Date:desc") {
-        data {
-          id
-          attributes {
-            Title
-            Description
-            Image {
-              data {
-                id
-                attributes {
-                  url
-                }
-              }
-            }
-            Date
-          }
-        }    
-      }    
+// ===== GraphQL エンドポイント =====
+const ENDPOINT = process.env.GRAPHQL_ENDPOINT_URL || "";
+
+// ===== NEWS 取得クエリ =====
+const QUERY = gql`
+  query UserEvents {
+    userEvents(
+      filters: { Visible: { eq: true } }
+      sort: ["Date:desc"]
+      pagination: { limit: 50 }
+    ) {
+      documentId
+      Title
+      Description
+      Date
+      Image { url }
     }
-  `;
+  }
+`;
 
-  let gql_res: any;
-
+// ===== NEWS データ取得（サーバー側で実行：SSR） =====
+async function getNews(): Promise<UserEvent[]> {
+  if (!ENDPOINT) {
+    console.error("GRAPHQL_ENDPOINT_URL が未設定です。");
+    return [];
+  }
   try {
-    gql_res = await request(
-      process.env.GRAPHQL_ENDPOINT_URL || '',
-      query
-    );
-    // console.log(gql_res.userEvents.data);
+    const res = await request<{ userEvents: UserEvent[] }>(ENDPOINT, QUERY, {}, {
+      // Strapi GraphQL の CSRF 防止に合わせて content-type を明示
+      "content-type": "application/json",
+    } as any);
+    return res?.userEvents ?? [];
+  } catch (e) {
+    console.error("GraphQL failed:", e);
+    return [];
   }
-  catch (e) {
-    console.error(e);
-  }
-
-  return gql_res.userEvents;
 }
 
-export default async function Home() {
-  const user_events: any = await getData();
-
-  function create_event_element(entity: UserEventEntity) {
-    const date = new Date(entity.attributes?.Date);
-    return (
-      <div className="my-8" key={entity.id}>
-        <div className="text-xl text-slate-800 font-semibold py-1 hover:text-gray-400">
-          <Link href={'/event/' + entity.id}>
-            {entity.attributes?.Title}
-          </Link>
-        </div>
-        <div className="py-1">{date.toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' })}</div>
+/* ------------------------------
+   OUR SERVICES セクション（静的）
+   ------------------------------ */
+function OurServices() {
+  return (
+    <section className="container mx-auto px-6 md:px-20">
+      <div className="mt-10 mb-4">
+        <h2 className="text-2xl text-slate-700 tracking-wide">
+          &mdash; OUR SERVICES &mdash;
+        </h2>
       </div>
-    );
-  }
+
+      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-10 gap-6">
+        <a
+          href="https://ecopluspc.cyberedge.jp"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 hover:opacity-75 transition"
+        >
+          <img src="/ECOPLUSPC.png" alt="ECOPLUSPC" className="h-14 w-14 object-contain" />
+          <span className="text-xl text-slate-700">法人向けPCリユース</span>
+        </a>
+
+        <a
+          href="https://www.sanpou-yoshi.co.jp"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 hover:opacity-75 transition"
+        >
+          <img src="/SANPOU-YOSHI.webp" alt="SANPOU-YOSHI" className="h-14 w-14 object-contain" />
+          <span className="text-xl text-slate-700">会計事務所向け業務支援ツール</span>
+        </a>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------
+   NEWS セクション
+   ------------------------------ */
+function NewsSection({ items }: { items: UserEvent[] }) {
+  return (
+    <section className="container mx-auto px-6 md:px-20">
+      <div className="my-10">
+        <h2 className="text-2xl tracking-wide text-slate-700">
+          &mdash; NEWS &mdash;
+        </h2>
+
+        {items.length === 0 ? (
+          <div className="mt-4 text-slate-500">現在お知らせはありません。</div>
+        ) : (
+          <div className="mt-2">
+            {items.map((ev) => {
+              const dateStr = ev.Date
+                ? new Date(ev.Date).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" })
+                : "";
+              return (
+                <div className="my-6" key={ev.documentId}>
+                  <h3 className="text-xl text-slate-700 py-1 hover:text-slate-500">
+                    <Link href={`/event/${ev.documentId}`}>{ev.Title ?? "(no title)"}</Link>
+                  </h3>
+                  <div className="py-1 text-slate-600">{dateStr}</div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------
+   ページ（サーバーコンポーネント：SSR）
+   ------------------------------ */
+export default async function Home() {
+  const news = await getNews();
 
   return (
     <>
       <GoogleTagManager />
       <div>
-        <Cover pathname='/' />
-        <div className="container mx-auto px-6 md:px-20">
-          <div className="my-10">
-            <div className="flex flex-col">
-              <div className="text-2xl font-semibold">
-                &mdash; OUR SERVICES &mdash;
-              </div>
-              <div className="mt-4 flex flex-row items-center gap-x-4">
-                <a href="https://ecopluspc.cyberedge.jp" target="_blank" className="flex flex-row items-center">
-                  <img src="/ECOPLUSPC.png" className="size-12" />
-                  <span className="text-xl">
-                    法人向けPCリユース
-                  </span>
-                </a>
-                <a href="https://www.sanpou-yoshi.co.jp" target="_blank" className="flex flex-row items-center">
-                  <img src="/SANPOU-YOSHI.webp" className="size-12" />
-                  <span className="text-xl">
-                    会計事務所向け業務支援ツール
-                  </span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="container mx-auto px-6 md:px-20">
-          <div className="my-10">
-            <div className="flex flex-col">
-              <div className="text-2xl font-semibold">
-                &mdash; NEWS &mdash;
-              </div>
-            </div>
-            {user_events.data.map((entity: UserEventEntity) => {
-              return create_event_element(entity);
-            })}
-          </div>
-        </div>
+        <Cover pathname="/" />
+        <OurServices />
+        <NewsSection items={news} />
       </div>
     </>
   );

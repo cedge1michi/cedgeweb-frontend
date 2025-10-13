@@ -1,18 +1,18 @@
 export const SiteURL = "https://www.cyberedge.jp";
 
 export const serviceSite = {
-	name: "サイバーエッジ株式会社",
-	title: "サイバーエッジ株式会社",
-	description:
-		"サイバーエッジ株式会社は、AI、市民開発支援、業種別DXサービスなどの最先端ITリソューションに関する事業開発支援、ITシステムやサービスに関するコンサルティング・システム開発、PCの買取や販売等のリユース事業を通じて、お客様のビジネスをご支援いたします。",
-	keywords: [
-		"AI",
-		"市民開発",
-		"ITリソューション",
-		"コンサルティング",
-		"システム開発",
-		"リユース",
-	],
-	url: SiteURL,
-	logo: `${SiteURL}/CYBEREDGE.png`,
+  name: "サイバーエッジ株式会社",
+  title: "サイバーエッジ株式会社 | AI・DX・市民開発支援",
+  description:
+    "サイバーエッジ株式会社は、AI・市民開発・DX支援など最先端のITソリューションを通じて、ビジネス課題をチャンスに変え、新たな価値を創造します。",
+  keywords: [
+    "AI",
+    "DX支援",
+    "市民開発",
+    "ITソリューション",
+    "システム開発",
+    "PCリユース",
+  ],
+  url: SiteURL,
+  logo: `${SiteURL}/CYBEREDGE.png`,
 };

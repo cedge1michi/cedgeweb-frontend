@@ -233,7 +233,7 @@ const Row = ({
 }) => (
   <div className={`flex items-center gap-4 py-1 ${isLast ? "" : "border-b border-slate-200"}`}>
     <div className="w-48 shrink-0 py-4 leading-6 text-slate-700">
-      {typeof title === "string" ? <p className="m-0">{title}</p> : <RenderRich value={title} />}
+      {typeof title === "string" ? <p className="mx-4">{title}</p> : <RenderRich value={title} />}
     </div>
     <div className="flex-1 leading-6 text-slate-700">
       <RenderRich value={desc} />

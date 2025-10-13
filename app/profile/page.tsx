@@ -3,10 +3,12 @@
 
 export const runtime = "nodejs";
 
+import type { Metadata } from "next";
+import parse from "html-react-parser";
 import { Cover } from "@/components/cover";
 import GoogleTagManager from "@/components/google_tag_manager";
+import { serviceSite } from "@/lib/definitions";
 import request, { gql } from "graphql-request";
-import parse from "html-react-parser";
 import {
   create_description_element,
   type Description as CEDescription,
@@ -257,11 +259,34 @@ const LocationBlock = ({
 /* =========================
    ページ
    ========================= */
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
+  const title = "会社概要";
+  const description =
+    "サイバーエッジ株式会社の企業情報、事業内容、所在地などの会社概要をご紹介します。";
   return {
-    title: "Profile - サイバーエッジ株式会社",
-    description:
-      "サイバーエッジ株式会社は、最先端のITシステムやソリューションに関する技術支援、コンサルティングやシステム開発等を通じて、信頼と品質を重視したサービスを提供します。",
+    title,
+    description,
+    alternates: {
+      canonical: `${serviceSite.url}/profile`,
+    },
+    openGraph: {
+      type: "profile",
+      url: `${serviceSite.url}/profile`,
+      title,
+      siteName: serviceSite.name,
+      description,
+      images: [
+        {
+          url: serviceSite.socialImage,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [serviceSite.socialImage],
+    },
   };
 }
 
@@ -291,20 +316,22 @@ export default async function Profile() {
   return (
     <>
       <GoogleTagManager />
-      <Cover pathname="/profile" />
-      <div className="container mx-auto px-6 md:px-20">
-        <div className="my-8">
-          {profiles.map((p, i) => (
-            <Row key={p.documentId} title={p.Title} desc={p.Description} isLast={i === lastIndex} />
-          ))}
+      <main>
+        <Cover pathname="/profile" />
+        <div className="container mx-auto px-6 md:px-20">
+          <div className="my-8">
+            {profiles.map((p, i) => (
+              <Row key={p.documentId} title={p.Title} desc={p.Description} isLast={i === lastIndex} />
+            ))}
 
-          {locations.length === 0 ? (
-            <p className="mt-6 text-slate-500">ロケーションは現在ありません。</p>
-          ) : (
-            locations.map((l) => <LocationBlock key={l.documentId} title={l.Title} map={l.Map} />)
-          )}
+            {locations.length === 0 ? (
+              <p className="mt-6 text-slate-500">ロケーションは現在ありません。</p>
+            ) : (
+              locations.map((l) => <LocationBlock key={l.documentId} title={l.Title} map={l.Map} />)
+            )}
+          </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

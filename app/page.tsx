@@ -1,9 +1,17 @@
 export const runtime = 'nodejs'; // 明示的に Node ランタイムでSSR
 
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { Cover } from "@/components/cover";
 import GoogleTagManager from "@/components/google_tag_manager";
+import { serviceSite } from "@/lib/definitions";
 import request, { gql } from "graphql-request";
-import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: { absolute: serviceSite.title },
+  description: serviceSite.description,
+};
 
 // ===== GraphQL 型（必要最小限） =====
 type UserEvent = {
@@ -72,7 +80,13 @@ function OurServices() {
           rel="noopener noreferrer"
           className="flex items-center gap-2 hover:opacity-75 transition"
         >
-          <img src="/ECOPLUSPC.png" alt="ECOPLUSPC" className="h-14 w-14 object-contain" />
+          <Image
+            src="/ECOPLUSPC.png"
+            alt="ECOPLUSPC"
+            width={56}
+            height={56}
+            className="h-14 w-14 object-contain"
+          />
           <span className="text-xl text-slate-700">法人向けPCリユース</span>
         </a>
 
@@ -82,7 +96,13 @@ function OurServices() {
           rel="noopener noreferrer"
           className="flex items-center gap-2 hover:opacity-75 transition"
         >
-          <img src="/SANPOU-YOSHI.webp" alt="SANPOU-YOSHI" className="h-14 w-14 object-contain" />
+          <Image
+            src="/SANPOU-YOSHI.webp"
+            alt="SANPOU-YOSHI"
+            width={56}
+            height={56}
+            className="h-14 w-14 object-contain"
+          />
           <span className="text-xl text-slate-700">会計事務所向け業務支援ツール</span>
         </a>
       </div>
@@ -134,11 +154,11 @@ export default async function Home() {
   return (
     <>
       <GoogleTagManager />
-      <div>
+      <main>
         <Cover pathname="/" />
         <OurServices />
         <NewsSection items={news} />
-      </div>
+      </main>
     </>
   );
 }

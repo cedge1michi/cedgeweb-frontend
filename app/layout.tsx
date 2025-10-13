@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { logger } from "@/lib/logger";
-import type { OnlineBusiness, WithContext } from "schema-dts";
+import type { OnlineBusiness, WebSite, WithContext } from "schema-dts";
 import { serviceSite } from "@/lib/definitions";
 
 /**
@@ -16,7 +16,7 @@ const font = Noto_Sans_JP({
   display: "swap",
 });
 
-const jsonLd: WithContext<OnlineBusiness> = {
+const businessJsonLd: WithContext<OnlineBusiness> = {
 	"@context": "https://schema.org",
 	"@type": "OnlineBusiness",
 	url: serviceSite.url,
@@ -25,15 +25,24 @@ const jsonLd: WithContext<OnlineBusiness> = {
 	description: serviceSite.description,
 };
 
-/**
- * デフォルトのサイトタイトルとサイト説明を定義する。
- */
-// export const metadata: Metadata = {
-//   title: "サイバーエッジ株式会社",
-//   description: "サイバーエッジ株式会社は、AI、市民開発支援、業種別DXサービスなどの最先端ITリソューションに関する事業開発支援、ITシステムやサービスに関するコンサルティング・システム開発、PCの買取や販売等のリユース事業を通じて、お客様のビジネスをご支援いたします。",
-// };
+const websiteJsonLd: WithContext<WebSite> = {
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	name: serviceSite.name,
+	alternateName: serviceSite.title,
+	url: serviceSite.url,
+	potentialAction: {
+		"@type": "SearchAction",
+		target: `${serviceSite.url}/search?q={search_term_string}`,
+	},
+};
+
 export const metadata: Metadata = {
-	title: serviceSite.title,
+	metadataBase: new URL(serviceSite.url),
+	title: {
+		default: serviceSite.title,
+		template: `%s | ${serviceSite.name}`,
+	},
 	description: serviceSite.description,
 	keywords: serviceSite.keywords,
 	openGraph: {
@@ -44,9 +53,18 @@ export const metadata: Metadata = {
 		siteName: serviceSite.name,
 		images: [
 			{
-				url: serviceSite.logo,
+				url: serviceSite.socialImage,
 			},
 		],
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: serviceSite.title,
+		description: serviceSite.description,
+		images: [serviceSite.socialImage],
+	},
+	alternates: {
+		canonical: serviceSite.url,
 	},
 };
 
@@ -67,7 +85,12 @@ export default function RootLayout({
 				<script
 					type="application/ld+json"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd) }}
+				/>
+				<script
+					type="application/ld+json"
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
 				/>
       </head>
       <body className={`

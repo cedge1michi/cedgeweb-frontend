@@ -1,43 +1,67 @@
 'use client';
+
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const NAV_ITEMS = [
+    { label: "HOME", href: "/" },
+    { label: "SERVICES", href: "/services" },
+    { label: "PROFILE", href: "/profile" },
+    { label: "CONTACT", href: "/contact" },
+];
 
 export default function Header() {
-    const [pathname, setPathname] = useState('');
-
-    useEffect(() => {
-        setPathname(window.location.pathname);
-    }, []);
-
-    function gen_navi_item(label: string, path: string) {
-        return (
-            <div className=''>
-                <a
-                    href={path}
-                    className={pathname === path ? "hover:text-gray-400 text-orange-400" : "hover:text-gray-400"}
-                >
-                    {label}
-                </a>
-            </div>
-        );
-    }
+    const pathname = usePathname();
 
     return (
-        <div className='container mx-auto px-4'>
-            <div className="flex items-center flex-wrap w-full md:inline-flex md:justify-between">
-                <div className='inline-flex flex-shrink-0 items-center w-full h-20 md:w-auto'>
-                    <Image src="/CYBEREDGE.svg" width={300} height={80} alt="" />
-                    <span className="text-2xl font-bold"></span>
+        <header className="container mx-auto px-4">
+            <div className="flex w-full flex-wrap items-center md:flex-nowrap md:justify-between">
+                <div className="inline-flex h-20 w-full flex-shrink-0 items-center md:w-auto">
+                    <Link href="/" aria-label="サイバーエッジ株式会社 トップページ">
+                        <Image
+                            src="/CYBEREDGE.svg"
+                            width={300}
+                            height={80}
+                            priority
+                            alt="サイバーエッジ株式会社"
+                        />
+                    </Link>
                 </div>
-                <div id="navbar_menu" className="inline-flex items-center justify-end w-full gap-x-4 pb-2 md:w-auto md:gap-x-6 md:pb-0 md:pr-8">
-                    {gen_navi_item('HOME', '/')}
-                    {gen_navi_item('SERVICES', '/services')}
-                    {gen_navi_item('PROFILE', '/profile')}
-                    {gen_navi_item('CONTACT', '/contact')}
-                    <a href="http://ecopluspc.cyberedge.jp/" className="text-white bg-green-600 px-3 py-1 rounded-xl" target="_blank">REUSE</a>
-                    {gen_navi_item('', '/contact')}
-                </div>
+                <nav
+                    id="navbar_menu"
+                    aria-label="グローバルナビゲーション"
+                    className="inline-flex w-full items-center justify-end gap-x-4 pb-2 text-sm md:w-auto md:gap-x-6 md:pb-0 md:pr-8 md:text-base"
+                >
+                    <ul className="flex items-center gap-x-4 md:gap-x-6">
+                        {NAV_ITEMS.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <li key={item.href}>
+                                    <Link
+                                        href={item.href}
+                                        className={
+                                            isActive
+                                                ? "text-orange-400 transition hover:text-gray-400"
+                                                : "transition hover:text-gray-400"
+                                        }
+                                    >
+                                        {item.label}
+                                    </Link>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                    <a
+                        href="http://ecopluspc.cyberedge.jp/"
+                        className="rounded-xl bg-green-600 px-3 py-1 text-white transition hover:bg-green-700"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        REUSE
+                    </a>
+                </nav>
             </div>
-        </div>
+        </header>
     );
-}  
+}

@@ -3,10 +3,41 @@
 
 export const runtime = 'nodejs';
 
+import type { Metadata } from "next";
+import React from "react";
 import { Cover } from "@/components/cover";
 import GoogleTagManager from "@/components/google_tag_manager";
+import { serviceSite } from "@/lib/definitions";
 import request, { gql } from "graphql-request";
-import React from "react";
+
+export const metadata: Metadata = {
+  title: "サービス紹介",
+  description:
+    "サイバーエッジ株式会社が提供するAI、市民開発支援、業種別DXサービスなどのソリューションをご紹介します。",
+  alternates: {
+    canonical: `${serviceSite.url}/services`,
+  },
+  openGraph: {
+    type: "website",
+    url: `${serviceSite.url}/services`,
+    title: "サービス紹介",
+    description:
+      "サイバーエッジ株式会社が提供するAI、市民開発支援、業種別DXサービスなどのソリューションをご紹介します。",
+    siteName: serviceSite.name,
+    images: [
+      {
+        url: serviceSite.socialImage,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "サービス紹介",
+    description:
+      "サイバーエッジ株式会社が提供するAI、市民開発支援、業種別DXサービスなどのソリューションをご紹介します。",
+    images: [serviceSite.socialImage],
+  },
+};
 
 /* ============== Strapi v5: 受け取り生型（最低限） ============== */
 type RawInline =
@@ -209,7 +240,7 @@ export default async function Services() {
   return (
     <>
       <GoogleTagManager />
-      <div>
+      <main>
         <Cover pathname="/services" />
         <div className="container mx-auto px-6 md:px-20">
           <div className="my-10">
@@ -220,7 +251,7 @@ export default async function Services() {
             )}
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

@@ -15,4 +15,5 @@ export const serviceSite = {
   ],
   url: SiteURL,
   logo: `${SiteURL}/CYBEREDGE.png`,
+  socialImage: `${SiteURL}/cover_cedge.webp`,
 };

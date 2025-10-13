@@ -1,23 +1,47 @@
+import type { Metadata } from "next";
 import { Cover } from "@/components/cover";
 import GoogleTagManager from "@/components/google_tag_manager";
-import { ServiceEntity, ServiceEntityResponseCollection, UserEventEntity, UserEventEntityResponseCollection } from "@/lib/graphql";
-import request, { gql } from "graphql-request";
+import { serviceSite } from "@/lib/definitions";
 
 /**
  * サイトタイトルとサイト説明を定義する。
  */
-export async function generateMetadata({ params }: { params: any }) {
+export async function generateMetadata(): Promise<Metadata> {
+  const title = "お問い合わせ";
+  const description =
+    "サイバーエッジ株式会社へのお問い合わせフォーム。最先端のテクノロジーを活用したサービスに関するご相談はこちらから承ります。";
   return {
-    title: "Contact - サイバーエッジ株式会社",
-    description: "サイバーエッジ株式会社へのお問い合わせはこちらから。最先端のテクノロジーを駆使したサービスで、お客様のビジネスをサポートし、セキュリティ、クラウドソリューション、ITコンサルティングなど、幅広いニーズにお応えいたします。",
-  }
+    title,
+    description,
+    alternates: {
+      canonical: `${serviceSite.url}/contact`,
+    },
+    openGraph: {
+      type: "website",
+      url: `${serviceSite.url}/contact`,
+      title,
+      description,
+      siteName: serviceSite.name,
+      images: [
+        {
+          url: serviceSite.socialImage,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [serviceSite.socialImage],
+    },
+  };
 };
 
-export default async function Services() {
+export default async function Contact() {
   return (
     <>
       <GoogleTagManager />
-      <div>
+      <main>
         <Cover pathname='/contact' />
         <div className="container mx-auto">
           <div className="my-10">
@@ -28,12 +52,13 @@ export default async function Services() {
               frameBorder={0}
               marginHeight={0}
               marginWidth={0}
-            >
+              title="お問い合わせフォーム"
+              >
               読み込んでいます…
             </iframe>
           </div >
         </div >
-      </div >
+      </main >
     </>
   );
 }

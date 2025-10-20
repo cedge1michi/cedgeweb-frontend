@@ -52,14 +52,6 @@ export default function Header() {
                             );
                         })}
                     </ul>
-                    <a
-                        href="http://ecopluspc.cyberedge.jp/"
-                        className="rounded-xl bg-green-600 px-3 py-1 text-white transition hover:bg-green-700"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        REUSE
-                    </a>
                 </nav>
             </div>
         </header>

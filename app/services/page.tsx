@@ -150,12 +150,12 @@ function ServiceBlock(item: ServiceItem) {
           href={item.URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xl text-slate-700 font-semibold hover:text-slate-600 transition"
+          className="text-xl text-slate-700 hover:text-slate-600 transition"
         >
           {item.Title}
         </a>
       ) : (
-        <div className="text-xl text-slate-700 font-semibold">{item.Title}</div>
+        <div className="text-xl text-slate-700">{item.Title}</div>
       )}
 
       {/* 説明（RichTextをそのまま描画） */}

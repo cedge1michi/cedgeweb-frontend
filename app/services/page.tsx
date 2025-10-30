@@ -16,7 +16,7 @@ import {
 import request, { gql } from "graphql-request";
 
 export const metadata: Metadata = {
-  title: "サービス紹介",
+  title: "サービス",
   description:
     "サイバーエッジ株式会社が提供するAI、市民開発支援、業種別DXサービスなどのソリューションをご紹介します。",
   alternates: {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: `${serviceSite.url}/services`,
-    title: "サービス紹介",
+    title: "サービス",
     description:
       "サイバーエッジ株式会社が提供するAI、市民開発支援、業種別DXサービスなどのソリューションをご紹介します。",
     siteName: serviceSite.name,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "サービス紹介",
+    title: "サービス",
     description:
       "サイバーエッジ株式会社が提供するAI、市民開発支援、業種別DXサービスなどのソリューションをご紹介します。",
     images: [serviceSite.socialImage],

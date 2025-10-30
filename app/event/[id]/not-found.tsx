@@ -10,7 +10,7 @@ export default function NotFound() {
         <Cover pathname="/event" headingLevel="h2" />
         <div className="container mx-auto px-6 md:px-20">
           <div className="my-10">
-            <h1 className="text-2xl font-semibold text-slate-800">イベントが見つかりませんでした</h1>
+            <h1 className="text-2xl font-semibold text-slate-800">サイバーエッジ株式会社</h1>
             <p className="mt-4 text-slate-600">
               お探しのイベントは削除されたか、URL が変更された可能性があります。
             </p>

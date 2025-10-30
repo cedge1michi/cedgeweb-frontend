@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { serviceSite } from "@/lib/definitions";
 
 const NAV_ITEMS = [
     { label: "HOME", href: "/" },
@@ -16,6 +17,7 @@ export default function Header() {
 
     return (
         <header className="container mx-auto px-4">
+            <h1 className="sr-only">{serviceSite.title}</h1>
             <div className="flex w-full flex-wrap items-center md:flex-nowrap md:justify-between">
                 <div className="inline-flex h-20 w-full flex-shrink-0 items-center md:w-auto">
                     <Link href="/" aria-label="サイバーエッジ株式会社 トップページ">

@@ -1,9 +1,19 @@
 'use client';
 
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { serviceSite } from "@/lib/definitions";
+
+const buildDocumentTitle = (baseTitle: string) => `${baseTitle} | ${serviceSite.name}`;
+
+const PATH_TITLE_OVERRIDES: Record<string, string> = {
+    "/": serviceSite.title,
+    "/services": buildDocumentTitle("サービス"),
+    "/profile": buildDocumentTitle("会社概要"),
+    "/contact": buildDocumentTitle("お問い合わせ"),
+};
 
 const NAV_ITEMS = [
     { label: "HOME", href: "/" },
@@ -14,10 +24,26 @@ const NAV_ITEMS = [
 
 export default function Header() {
     const pathname = usePathname();
+    const fallbackTitle = useMemo(() => {
+        if (pathname in PATH_TITLE_OVERRIDES) {
+            return PATH_TITLE_OVERRIDES[pathname];
+        }
+        return serviceSite.title;
+    }, [pathname]);
+
+    const [hiddenTitle, setHiddenTitle] = useState(fallbackTitle);
+
+    useEffect(() => {
+        if (typeof document !== "undefined" && document.title) {
+            setHiddenTitle(document.title);
+            return;
+        }
+        setHiddenTitle(fallbackTitle);
+    }, [pathname]);
 
     return (
         <header className="container mx-auto px-4">
-            <h1 className="sr-only">{serviceSite.title}</h1>
+            <h1 className="sr-only">{hiddenTitle}</h1>
             <div className="flex w-full flex-wrap items-center md:flex-nowrap md:justify-between">
                 <div className="inline-flex h-20 w-full flex-shrink-0 items-center md:w-auto">
                     <Link href="/" aria-label="サイバーエッジ株式会社 トップページ">

@@ -7,7 +7,7 @@ const businessJsonLd: WithContext<Organization> = {
 	"@context": "https://schema.org",
 	"@type": "Organization",
 	name: serviceSite.name,
-	alternateName: serviceSite.name,
+	alternateName: [serviceSite.name, serviceSite.nameInEnglish],
 	description: serviceSite.description,
 	url: serviceSite.url,
 	logo: serviceSite.logo,
@@ -17,7 +17,7 @@ const websiteJsonLd: WithContext<WebSite> = {
 	"@context": "https://schema.org",
 	"@type": "WebSite",
 	name: serviceSite.name,
-	alternateName: serviceSite.name,
+	alternateName: [serviceSite.name, serviceSite.nameInEnglish],
 	url: serviceSite.url,
 	potentialAction: {
 		"@type": "SearchAction",

@@ -1,4 +1,5 @@
-export const runtime = 'nodejs'; // 明示的に Node ランタイムでSSR
+export const runtime = "nodejs"; // 明示的に Node ランタイムでSSR
+export const dynamic = "force-dynamic"; // NEWS を常に最新取得する
 
 import type { Metadata } from "next";
 import Image from "next/image";

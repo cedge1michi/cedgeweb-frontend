@@ -3,6 +3,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { JsonLdScripts } from "@/components/json-ld";
 import { logger } from "@/lib/logger";
 import { serviceSite } from "@/lib/definitions";
 
@@ -66,6 +67,7 @@ export default function RootLayout({
         text-base
         text-gray-700
       `}>
+				<JsonLdScripts />
 				<div id="header" className="relative z-20 h-20">
 					<div className="fixed top-0 w-full bg-white">
 						<Header />

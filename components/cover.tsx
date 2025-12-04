@@ -53,6 +53,13 @@ function getTitleInfo(path: string): CoverInfo {
                 headingLevel: 'h2',
                 titleClass: "text-4xl font-bold leading-tight md:text-5xl md:leading-tight",
             };
+        case '/search':
+            return {
+                title: "SEARCH",
+                subTitle: "HOME > SEARCH",
+                headingLevel: 'h2',
+                titleClass: "text-4xl font-bold leading-tight md:text-5xl md:leading-tight",
+            };
         default:
             return {
                 title: '',

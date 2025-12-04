@@ -4,7 +4,6 @@ import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { logger } from "@/lib/logger";
-import type { Organization, WebSite, WithContext, SearchAction } from "schema-dts";
 import { serviceSite } from "@/lib/definitions";
 
 /**
@@ -15,30 +14,6 @@ const font = Noto_Sans_JP({
 	subsets: ["latin"],
 	display: "swap",
 });
-
-const businessJsonLd: WithContext<Organization> = {
-	"@context": "https://schema.org",
-	"@type": "Organization",
-	url: serviceSite.url,
-	logo: serviceSite.logo,
-	name: serviceSite.name,
-	description: serviceSite.description,
-};
-
-type SearchActionLoose = SearchAction & { ["query-input"]?: string };
-
-const websiteJsonLd: WithContext<WebSite> = {
-	"@context": "https://schema.org",
-	"@type": "WebSite",
-	name: serviceSite.name,
-	alternateName: serviceSite.title,
-	url: serviceSite.url,
-	potentialAction: {
-		"@type": "SearchAction",
-		target: `${serviceSite.url}/search?q={search_term_string}`,
-		"query-input": "required name=search_term_string"
-	} as SearchActionLoose,
-};
 
 export const metadata: Metadata = {
 	metadataBase: new URL(serviceSite.url),
@@ -66,6 +41,9 @@ export const metadata: Metadata = {
 		description: serviceSite.description,
 		images: [serviceSite.socialImage],
 	},
+	icons: {
+		icon: [{ url: "/favicon.ico", sizes: "any" }],
+	},
 	alternates: {
 		canonical: serviceSite.url,
 	},
@@ -83,19 +61,6 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="ja">
-			<head>
-				<link rel="icon" href="/favicon.ico" sizes="any" />
-				<script
-					type="application/ld+json"
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd) }}
-				/>
-				<script
-					type="application/ld+json"
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-				/>
-			</head>
 			<body className={`
         ${font.className}
         text-base
